@@ -72,9 +72,9 @@ FIG_REGIAO_SAUDE_MAP = {}
 FIG_REGIAO_INTERIOR_MAP = {}
 
 map_background_color = '#fafaf8'
-# bg_selected_color = '#dbdbcc'
-# bg_selected_color = '#e6e6d5'
-bg_selected_color = '#e6e6d3'
+# bg_selected_color = '#e6e6d3'
+bg_selected_color = '#e2e9ed'
+tab_colors = '#e2e9ed'
 
 DROPDOWN_OPTIONS = ['Casos Acumulados', 'Casos Novos', 'Óbitos Acumulados', 'Óbitos Novos']
 MUNICIPIOS_E_TOCANTINS = np.append(df_tocantins['Município'].unique(),'Tocantins')
@@ -127,7 +127,7 @@ app.layout = dbc.Container([
         dbc.Col(children=[
             html.A(
                 html.Img(src=app.get_asset_url('github.png')),
-                href='https://www.w3schools.com/cssref/css_colors.asp', 
+                href='https://github.com/davi-santos/dashboard-covid19-tocantins/tree/main', 
                 target='_blank'
             ),
             html.A(
@@ -162,7 +162,7 @@ app.layout = dbc.Container([
                         dbc.CardHeader(children=[
                             html.H5('Casos'),
                             html.H4(casosCard)
-                        ], className='text-black', style={'background-color': '#FFFACD'}),
+                        ], className='text-light', style={'background-color': '#333333'}),
                     ), 
                     width=4
                 ),
@@ -171,7 +171,7 @@ app.layout = dbc.Container([
                         dbc.CardHeader(children=[
                             html.H5('Recuperados'),
                             html.H4(recuperadosCard)
-                        ], className='text-black', style={'background-color': '#98FB98'})
+                        ], className='text-light', style={'background-color': '#333333'})
                     ), width=4
                 ),
                 dbc.Col(
@@ -179,7 +179,7 @@ app.layout = dbc.Container([
                         dbc.CardHeader(children=[
                             html.H5('Óbitos'),
                             html.H4(obitosCard)
-                        ], className='text-black', style={'background-color': '#FFB6C1'})
+                        ], className='text-light', style={'background-color': '#333333'})
                     ), width=4
                 )
             ], className='mb-3 mt-0 text-center text-black'),
@@ -198,7 +198,7 @@ app.layout = dbc.Container([
                                     className='border-0'
                                 )
                             ], className='mt-2')
-                        ],label="Cidades mais impactadas", active_label_style={"background-color": bg_selected_color},
+                        ],label="Cidades mais impactadas", active_label_style={"background-color": tab_colors},
                         tab_id="tab-2", label_style={'color': 'black'}),
                         dbc.Tab(children=[
                             dbc.Row(children=[
@@ -220,7 +220,7 @@ app.layout = dbc.Container([
                                 className='border-0'
                             ),
                         ], style={'color':'black'}),
-                        ],label="Dados Gerais no Tocantins", active_label_style={"background-color": bg_selected_color},
+                        ],label="Dados Gerais no Tocantins", active_label_style={"background-color": tab_colors},
                         tab_id="tab-1", label_style={'color': 'black'}),
                         dbc.Tab(children=[
                             dbc.Row([
@@ -235,7 +235,7 @@ app.layout = dbc.Container([
                                     className='border-0'
                                 )
                             ], className='mt-2')
-                        ],label="Regiões de Saúde", active_label_style={"background-color": bg_selected_color},tab_id="tab-3", 
+                        ],label="Regiões de Saúde", active_label_style={"background-color": tab_colors},tab_id="tab-3", 
                         label_style={'color': 'black'}),
                     dbc.Tab(children=[
                             dbc.Row([
@@ -248,7 +248,7 @@ app.layout = dbc.Container([
                                     className='border-0'
                                 )
                             ], className='mt-2')
-                        ],label="Interior", active_label_style={"background-color": bg_selected_color}, 
+                        ],label="Interior", active_label_style={"background-color": tab_colors}, 
                         tab_id="tab-4", label_style={'color': 'black'}),
                     ], className=''),
                 )
@@ -318,7 +318,10 @@ def updateFigureTopCities(city_option):
     n_cities = 5
 
     df_copy = df_tocantins[[city_option, 'Município']].groupby('Município').max().sort_values(city_option, ascending=False)[:n_cities]
-    fig = px.bar(df_copy, x=df_copy.index, y=city_option, title=f'{city_option} - {n_cities} cidades em destaque', color_discrete_sequence=px.colors.qualitative.D3)
+    fig = px.bar(df_copy, x=df_copy.index, y=city_option, title=f'{city_option} - {n_cities} cidades em destaque', 
+    color_discrete_sequence=px.colors.qualitative.Vivid)
+    #Prism = roxo (bom), Safe = azul claro (bom), Set3 = verde claro (bonito), Vivid=amarelo forte (perfeito)
+    #
 
     fig.update_layout(paper_bgcolor=map_background_color)
 
@@ -347,7 +350,8 @@ def updateRegiaoTab(option_chosen):
         most_recent_date = df_tocantins['Data'].max().date().isoformat()
         df = df_tocantins[df_tocantins['Data'] == most_recent_date][[option_chosen, 'Nome Região Saúde']]\
                         .groupby('Nome Região Saúde').sum()
-        fig = px.bar(df, df.index, option_chosen, title=f'{option_chosen} por Região de Saúde')
+        fig = px.bar(df, df.index, option_chosen, title=f'{option_chosen} por Região de Saúde',
+            color_discrete_sequence=px.colors.qualitative.Vivid)
         fig.update_layout(showlegend=False, paper_bgcolor=map_background_color,)
 
     return fig
